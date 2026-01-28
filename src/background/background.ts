@@ -40,28 +40,19 @@ browser.runtime.onMessage.addListener((message: any, _sender: any) => {
 async function downloadFile(data: DownloadData): Promise<number> {
   const { content, fileName, mimeType } = data;
 
-  // Create a data URL from the content
-  const blob = new Blob([content], { type: mimeType });
-  const url = URL.createObjectURL(blob);
+  // Use data URL for Chrome MV3 service worker compatibility
+  // Service workers don't have access to URL.createObjectURL
+  const base64Content = globalThis.btoa(unescape(encodeURIComponent(content)));
+  const dataUrl = `data:${mimeType};base64,${base64Content}`;
 
-  try {
-    // Trigger download
-    const downloadId = await browser.downloads.download({
-      url: url,
-      filename: fileName,
-      saveAs: true,
-    });
+  // Trigger download
+  const downloadId = await browser.downloads.download({
+    url: dataUrl,
+    filename: fileName,
+    saveAs: true,
+  });
 
-    // Clean up the blob URL after download starts
-    setTimeout(() => {
-      URL.revokeObjectURL(url);
-    }, 60000); // Clean up after 1 minute
-
-    return downloadId;
-  } catch (error) {
-    URL.revokeObjectURL(url);
-    throw error;
-  }
+  return downloadId;
 }
 
 // Log when extension is installed or updated
