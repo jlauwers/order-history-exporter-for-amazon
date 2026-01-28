@@ -5,6 +5,13 @@
 
 import type { DownloadData, MessagePayload } from '../types';
 
+/**
+ * Get localized message from browser i18n API
+ */
+function getMessage(key: string, substitutions?: string | string[]): string {
+  return browser.i18n.getMessage(key, substitutions) || key;
+}
+
 // Listen for messages from content scripts
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 browser.runtime.onMessage.addListener((message: any, _sender: any) => {
@@ -59,8 +66,8 @@ async function downloadFile(data: DownloadData): Promise<number> {
 // Log when extension is installed or updated
 browser.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install') {
-    console.log('Amazon Order History Exporter installed');
+    console.log(getMessage('extensionInstalled'));
   } else if (details.reason === 'update') {
-    console.log('Amazon Order History Exporter updated to version', browser.runtime.getManifest().version);
+    console.log(getMessage('extensionUpdated'), browser.runtime.getManifest().version);
   }
 });

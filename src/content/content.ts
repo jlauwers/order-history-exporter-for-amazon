@@ -10,6 +10,13 @@ import type { ExportOptions, ExportState, Order, OrderItem, Promotion } from '..
 
   const STORAGE_KEY = 'amazonExporter';
 
+  /**
+   * Get localized message from browser i18n API
+   */
+  function getMessage(key: string, substitutions?: string | string[]): string {
+    return browser.i18n.getMessage(key, substitutions) || key;
+  }
+
   // Check if we're in the middle of an export operation
   checkExportState();
 
@@ -72,7 +79,7 @@ import type { ExportOptions, ExportState, Order, OrderItem, Promotion } from '..
     setTimeout(() => {
       const state = getExportState();
       if (state && state.inProgress) {
-        console.log('[Amazon Exporter] Resuming export...', state);
+        console.log('[Amazon Exporter]', getMessage('resumingExport'), state);
         continueExport(state);
       }
     }, 1500);
@@ -102,7 +109,7 @@ import type { ExportOptions, ExportState, Order, OrderItem, Promotion } from '..
     console.log('[Amazon Exporter] Years to process:', yearsToProcess);
 
     if (yearsToProcess.length === 0) {
-      alert('No years found to export. Please make sure you are on the Amazon order history page.');
+      alert(getMessage('noYearsFound'));
       return;
     }
 
@@ -143,9 +150,10 @@ import type { ExportOptions, ExportState, Order, OrderItem, Promotion } from '..
    */
   function continueExport(state: ExportState): void {
     const currentYear = state.yearsToProcess[state.currentYearIndex];
+    const pageNum = String(Math.floor(state.currentStartIndex / 10) + 1);
     updateProgress(
       calculateProgress(state),
-      `Processing ${currentYear} (page ${Math.floor(state.currentStartIndex / 10) + 1})...`
+      getMessage('processingYear', [currentYear || '', pageNum])
     );
 
     scrapeCurrentPageAndContinue(state);
@@ -215,12 +223,12 @@ import type { ExportOptions, ExportState, Order, OrderItem, Promotion } from '..
   async function finishExport(state: ExportState): Promise<void> {
     console.log('[Amazon Exporter] Export complete. Total orders:', state.collectedOrders.length);
 
-    updateProgress(80, `Fetching item prices for ${state.collectedOrders.length} orders...`);
+    updateProgress(80, getMessage('fetchingPrices', [String(state.collectedOrders.length)]));
 
     // Fetch item prices for multi-item orders
     await fetchOrderDetailsForPrices(state.collectedOrders);
 
-    updateProgress(95, 'Generating file...');
+    updateProgress(95, getMessage('generatingFile'));
 
     // Generate file
     let fileContent: string;
@@ -248,7 +256,7 @@ import type { ExportOptions, ExportState, Order, OrderItem, Promotion } from '..
       },
     });
 
-    updateProgress(100, `Export complete! ${state.collectedOrders.length} orders exported.`);
+    updateProgress(100, getMessage('exportComplete', [String(state.collectedOrders.length)]));
 
     // Clear state
     clearExportState();
@@ -743,7 +751,7 @@ import type { ExportOptions, ExportState, Order, OrderItem, Promotion } from '..
       if (!order) continue;
 
       try {
-        updateProgress(80 + (i / ordersNeedingDetails.length) * 10, `Fetching prices for order ${i + 1}/${ordersNeedingDetails.length}...`);
+        updateProgress(80 + (i / ordersNeedingDetails.length) * 10, getMessage('fetchingPricesProgress', [String(i + 1), String(ordersNeedingDetails.length)]));
 
         const response = await fetch(order.detailsUrl, {
           credentials: 'include',
@@ -942,7 +950,7 @@ import type { ExportOptions, ExportState, Order, OrderItem, Promotion } from '..
         const additionalDiscount = Math.round((unexplainedDiscount - totalSavings) * 100) / 100;
         if (additionalDiscount > 0.01) {
           promotions.push({
-            description: 'Additional discount',
+            description: getMessage('additionalDiscount'),
             amount: additionalDiscount,
           });
           totalSavings = unexplainedDiscount;
@@ -1031,20 +1039,20 @@ import type { ExportOptions, ExportState, Order, OrderItem, Promotion } from '..
    */
   function convertToCSV(orders: Order[]): string {
     const headers = [
-      'Order ID',
-      'Order Date',
-      'Total Amount',
-      'Currency',
-      'Total Savings',
-      'Status',
-      'Item Title',
-      'Item ASIN',
-      'Item Quantity',
-      'Item Price',
-      'Item Discount',
-      'Promotions',
-      'Item URL',
-      'Details URL',
+      getMessage('csvHeaderOrderId'),
+      getMessage('csvHeaderOrderDate'),
+      getMessage('csvHeaderTotalAmount'),
+      getMessage('csvHeaderCurrency'),
+      getMessage('csvHeaderTotalSavings'),
+      getMessage('csvHeaderStatus'),
+      getMessage('csvHeaderItemTitle'),
+      getMessage('csvHeaderItemAsin'),
+      getMessage('csvHeaderItemQuantity'),
+      getMessage('csvHeaderItemPrice'),
+      getMessage('csvHeaderItemDiscount'),
+      getMessage('csvHeaderPromotions'),
+      getMessage('csvHeaderItemUrl'),
+      getMessage('csvHeaderDetailsUrl'),
     ];
 
     const rows: string[] = [headers.join(',')];

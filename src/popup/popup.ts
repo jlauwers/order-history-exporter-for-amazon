@@ -5,7 +5,31 @@
 
 import type { ExportOptions, ProgressData } from '../types';
 
+/**
+ * Get localized message from browser i18n API
+ */
+function getMessage(key: string, substitutions?: string | string[]): string {
+  return browser.i18n.getMessage(key, substitutions) || key;
+}
+
+/**
+ * Apply i18n translations to all elements with data-i18n attribute
+ */
+function applyI18n(): void {
+  document.querySelectorAll('[data-i18n]').forEach((element) => {
+    const key = element.getAttribute('data-i18n');
+    if (key) {
+      const message = getMessage(key);
+      if (message) {
+        element.textContent = message;
+      }
+    }
+  });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
+  // Apply translations
+  applyI18n();
   const notAmazonEl = document.getElementById('not-amazon') as HTMLElement;
   const mainContentEl = document.getElementById('main-content') as HTMLElement;
   const exportBtn = document.getElementById('exportBtn') as HTMLButtonElement;
@@ -63,26 +87,26 @@ document.addEventListener('DOMContentLoaded', async () => {
       endDate = endDateInput.value;
 
       if (!startDate || !endDate) {
-        showStatus('Please select both start and end dates.', 'error');
+        showStatus(getMessage('errorSelectDates'), 'error');
         return;
       }
 
       if (new Date(startDate) > new Date(endDate)) {
-        showStatus('Start date must be before end date.', 'error');
+        showStatus(getMessage('errorDateOrder'), 'error');
         return;
       }
     }
 
     // Start export
-    showProgress(0, 'Starting export... The page will navigate through your order history.');
+    showProgress(0, getMessage('exportStartedMessage'));
     showStatus(
-      'Export started! Keep this popup open or check the browser tab. The page will navigate through years automatically.',
+      getMessage('exportStartedStatus'),
       'success'
     );
 
     try {
       if (!currentTab?.id) {
-        showStatus('Failed to get current tab.', 'error');
+        showStatus(getMessage('errorGetTab'), 'error');
         return;
       }
 
@@ -101,16 +125,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if (response.success) {
         showStatus(
-          'Export initiated! Watch the browser tab - it will navigate through your orders. File will download when complete.',
+          getMessage('exportInitiatedStatus'),
           'success'
         );
       } else {
-        showStatus(response.error || 'Export failed. Please try again.', 'error');
+        showStatus(response.error || getMessage('exportFailedGeneric'), 'error');
       }
     } catch (error) {
       console.error('Export error:', error);
       showStatus(
-        'Failed to start export. Make sure you are on the Amazon order history page and refresh the page.',
+        getMessage('exportFailedRefresh'),
         'error'
       );
     }

@@ -69,5 +69,31 @@ if (fs.existsSync(iconsDir)) {
   console.log('✓ Icons copied');
 }
 
+// Copy locales
+const localesDir = `${srcDir}/_locales`;
+const destLocalesDir = `${distDir}/_locales`;
+
+if (fs.existsSync(localesDir)) {
+  const copyDirRecursive = (src, dest) => {
+    if (!fs.existsSync(dest)) {
+      fs.mkdirSync(dest, { recursive: true });
+    }
+    
+    fs.readdirSync(src).forEach(item => {
+      const srcPath = path.join(src, item);
+      const destPath = path.join(dest, item);
+      
+      if (fs.statSync(srcPath).isDirectory()) {
+        copyDirRecursive(srcPath, destPath);
+      } else {
+        fs.copyFileSync(srcPath, destPath);
+      }
+    });
+  };
+  
+  copyDirRecursive(localesDir, destLocalesDir);
+  console.log('✓ Locales copied');
+}
+
 console.log('\n✅ Build completed successfully!');
 console.log(`   Output directory: ${distDir}/`);
