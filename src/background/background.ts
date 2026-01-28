@@ -40,19 +40,43 @@ browser.runtime.onMessage.addListener((message: any, _sender: any) => {
 async function downloadFile(data: DownloadData): Promise<number> {
   const { content, fileName, mimeType } = data;
 
-  // Use data URL for Chrome MV3 service worker compatibility
-  // Service workers don't have access to URL.createObjectURL
-  const base64Content = globalThis.btoa(unescape(encodeURIComponent(content)));
-  const dataUrl = `data:${mimeType};base64,${base64Content}`;
+  let url: string;
+  let isObjectUrl = false;
 
-  // Trigger download
-  const downloadId = await browser.downloads.download({
-    url: dataUrl,
-    filename: fileName,
-    saveAs: true,
-  });
+  // Check if we're in a service worker context (Chrome MV3) or regular background script (Firefox)
+  // Service workers don't have access to Blob/URL.createObjectURL
+  if (typeof Blob !== 'undefined' && typeof URL !== 'undefined' && URL.createObjectURL) {
+    // Firefox: Use Blob URL
+    const blob = new Blob([content], { type: mimeType });
+    url = URL.createObjectURL(blob);
+    isObjectUrl = true;
+  } else {
+    // Chrome MV3 service worker: Use data URL
+    const base64Content = globalThis.btoa(unescape(encodeURIComponent(content)));
+    url = `data:${mimeType};base64,${base64Content}`;
+  }
 
-  return downloadId;
+  try {
+    const downloadId = await browser.downloads.download({
+      url: url,
+      filename: fileName,
+      saveAs: true,
+    });
+
+    // Clean up blob URL after a delay (only for object URLs)
+    if (isObjectUrl) {
+      setTimeout(() => {
+        URL.revokeObjectURL(url);
+      }, 60000);
+    }
+
+    return downloadId;
+  } catch (error) {
+    if (isObjectUrl) {
+      URL.revokeObjectURL(url);
+    }
+    throw error;
+  }
 }
 
 // Log when extension is installed or updated
