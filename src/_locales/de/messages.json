@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "Amazon Bestellexport",
+    "message": "Bestellexport für Amazon",
     "description": "The name of the extension"
   },
   "extensionDescription": {
@@ -156,11 +156,11 @@
     "description": "Label for unexplained discounts"
   },
   "extensionInstalled": {
-    "message": "Amazon Bestellexport wurde installiert",
+    "message": "Bestellexport für Amazon wurde installiert",
     "description": "Console message on install"
   },
   "extensionUpdated": {
-    "message": "Amazon Bestellexport wurde aktualisiert auf Version",
+    "message": "Bestellexport für Amazon wurde aktualisiert auf Version",
     "description": "Console message on update (version appended)"
   },
   "csvHeaderOrderId": {

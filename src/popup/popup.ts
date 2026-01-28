@@ -1,5 +1,5 @@
 /**
- * Amazon Order History Exporter - Popup Script
+ * Order History Exporter for Amazon - Popup Script
  * Handles UI interactions and communicates with content script
  */
 

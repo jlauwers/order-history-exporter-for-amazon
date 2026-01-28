@@ -1,5 +1,5 @@
 /**
- * Shared types for Amazon Order History Exporter
+ * Shared types for Order History Exporter for Amazon
  */
 
 export interface OrderItem {

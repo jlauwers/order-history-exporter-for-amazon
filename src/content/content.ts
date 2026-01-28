@@ -1,5 +1,5 @@
 /**
- * Amazon Order History Exporter - Content Script
+ * Order History Exporter for Amazon - Content Script
  * Scrapes order data from Amazon order history pages using browser navigation
  */
 

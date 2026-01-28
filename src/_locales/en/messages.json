@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "Amazon Order History Exporter",
+    "message": "Order History Exporter for Amazon",
     "description": "The name of the extension"
   },
   "extensionDescription": {
@@ -156,11 +156,11 @@
     "description": "Label for unexplained discounts"
   },
   "extensionInstalled": {
-    "message": "Amazon Order History Exporter installed",
+    "message": "Order History Exporter for Amazon installed",
     "description": "Console message on install"
   },
   "extensionUpdated": {
-    "message": "Amazon Order History Exporter updated to version",
+    "message": "Order History Exporter for Amazon updated to version",
     "description": "Console message on update (version appended)"
   },
   "csvHeaderOrderId": {

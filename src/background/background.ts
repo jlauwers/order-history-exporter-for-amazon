@@ -1,5 +1,5 @@
 /**
- * Amazon Order History Exporter - Background Script
+ * Order History Exporter for Amazon - Background Script
  * Handles file downloads and cross-script communication
  */
 

@@ -1,6 +1,6 @@
 {
   "extensionName": {
-    "message": "Exportador de historial de pedidos de Amazon",
+    "message": "Exportador de historial de pedidos para Amazon",
     "description": "The name of the extension"
   },
   "extensionDescription": {
@@ -156,11 +156,11 @@
     "description": "Label for unexplained discounts"
   },
   "extensionInstalled": {
-    "message": "Exportador de historial de pedidos de Amazon instalado",
+    "message": "Exportador de historial de pedidos para Amazon instalado",
     "description": "Console message on install"
   },
   "extensionUpdated": {
-    "message": "Exportador de historial de pedidos de Amazon actualizado a la versión",
+    "message": "Exportador de historial de pedidos para Amazon actualizado a la versión",
     "description": "Console message on update (version appended)"
   },
   "csvHeaderOrderId": {

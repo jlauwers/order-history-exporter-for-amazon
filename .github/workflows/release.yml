@@ -128,13 +128,13 @@ jobs:
       - name: Package Firefox extension (.xpi)
         run: |
           cd dist
-          zip -r ../amazon-order-history-exporter-${{ steps.version.outputs.VERSION }}.xpi ./*
+          zip -r ../order-history-exporter-for-amazon-${{ steps.version.outputs.VERSION }}.xpi ./*
           cd ..
 
       - name: Package plain zip
         run: |
           cd dist
-          zip -r ../amazon-order-history-exporter-${{ steps.version.outputs.VERSION }}.zip ./*
+          zip -r ../order-history-exporter-for-amazon-${{ steps.version.outputs.VERSION }}.zip ./*
           cd ..
 
       - name: Create GitHub Release
@@ -145,7 +145,7 @@ jobs:
           draft: false
           prerelease: ${{ contains(github.ref, '-alpha') || contains(github.ref, '-beta') || contains(github.ref, '-rc') }}
           files: |
-            amazon-order-history-exporter-${{ steps.version.outputs.VERSION }}.xpi
-            amazon-order-history-exporter-${{ steps.version.outputs.VERSION }}.zip
+            order-history-exporter-for-amazon-${{ steps.version.outputs.VERSION }}.xpi
+            order-history-exporter-for-amazon-${{ steps.version.outputs.VERSION }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

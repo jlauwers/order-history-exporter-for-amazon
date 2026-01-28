@@ -1,6 +1,6 @@
-<img src="assets/icons/icon-96.png" alt="Amazon Order History Exporter" width="80">
+<img src="assets/icons/icon-96.png" alt="Order History Exporter for Amazon" width="80">
 
-# Amazon Order History Exporter
+# Order History Exporter for Amazon
 
 [![License: Unlicense](https://img.shields.io/badge/License-Unlicense-blue.svg)](LICENSE)
 [![Firefox](https://img.shields.io/badge/Firefox-Extension-FF7139?logo=firefox&logoColor=white)](https://www.mozilla.org/firefox/)
@@ -12,7 +12,7 @@ Firefox browser extension for exporting your Amazon order history to JSON or CSV
 
 ## Table of Contents
 
-- [Amazon Order History Exporter](#amazon-order-history-exporter)
+- [Order History Exporter for Amazon](#order-history-exporter-for-amazon)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [Installation](#installation)
@@ -44,8 +44,8 @@ Requires Node.js 20+.
 
 ```bash
 # Clone the repository
-git clone https://github.com/xenolphthalein/amazon-order-history-exporter.git
-cd amazon-order-history-exporter
+git clone https://github.com/xenolphthalein/order-history-exporter-for-amazon.git
+cd order-history-exporter-for-amazon
 
 # Install dependencies
 npm install
