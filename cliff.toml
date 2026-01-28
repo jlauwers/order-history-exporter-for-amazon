@@ -1,0 +1,73 @@
+# git-cliff configuration file
+# https://git-cliff.org/docs/configuration
+
+[changelog]
+# Template for the changelog body
+body = """
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | upper_first }}
+{% for commit in commits %}
+- {% if commit.scope %}**{{ commit.scope }}:** {% endif %}{{ commit.message | upper_first }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/commit/{{ commit.id }}))\
+{% endfor %}
+{% endfor %}
+"""
+# Remove leading and trailing whitespace
+trim = true
+
+[git]
+# Parse conventional commits
+conventional_commits = true
+# Filter out unconventional commits
+filter_unconventional = false
+# Process each line of a commit as an individual commit
+split_commits = false
+# Protect against sensitive info in commits
+protect_breaking_commits = false
+# Filter out commits that match this regex
+filter_commits = false
+# Regex for matching git tags (version tags)
+tag_pattern = "v[0-9].*"
+# Sort commits by date
+sort_commits = "newest"
+
+# Commit groups and their display names
+commit_parsers = [
+  # Skip merge commits
+  { message = "^Merge pull request", skip = true },
+  { message = "^Merge branch", skip = true },
+  # Skip release commits
+  { message = "^chore\\(release\\)", skip = true },
+  # Conventional commit types (order matters - more specific first)
+  { message = "^feat", group = "✨ Features" },
+  { message = "^fix\\(deps\\)", group = "📦 Dependencies" },
+  { message = "^fix", group = "🐛 Bug Fixes" },
+  { message = "^doc", group = "📚 Documentation" },
+  { message = "^perf", group = "⚡ Performance" },
+  { message = "^refactor", group = "♻️ Refactoring" },
+  { message = "^style", group = "🎨 Styling" },
+  { message = "^test", group = "🧪 Testing" },
+  { message = "^build", group = "🏗️ Build" },
+  { message = "^ci", group = "👷 CI/CD" },
+  { message = "^chore\\(deps\\)", group = "📦 Dependencies" },
+  { message = "^chore", group = "🔧 Miscellaneous" },
+  { message = "^revert", group = "⏪ Reverted" },
+  # Catch-all for non-conventional commits
+  { body = ".*", group = "📝 Other" },
+]
+
+# Regex for parsing and grouping commits
+commit_preprocessors = [
+  # Remove issue numbers from commits
+  { pattern = '\((\w+\s)?#([0-9]+)\)', replace = "" },
+]
+
+# Link patterns for external references
+link_parsers = [
+  { pattern = "#(\\d+)", href = "https://github.com/{{ remote.github.owner }}/{{ remote.github.repo }}/issues/$1" },
+]
+
+# GitHub repository info (used for commit links in changelog)
+# These values will be overridden by the git-cliff-action in CI
+[remote.github]
+owner = "xenolphthalein"
+repo = "amazon-order-history-exporter"
