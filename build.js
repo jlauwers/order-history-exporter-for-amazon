@@ -72,12 +72,6 @@ async function buildForTarget(browserTarget) {
       target: 'es2020',
       minify: process.env.NODE_ENV === 'production',
       sourcemap: process.env.NODE_ENV !== 'production',
-      // Define browser polyfill for Chrome
-      define: isChrome
-        ? {
-            browser: 'chrome',
-          }
-        : {},
     });
 
     console.log(`  ✓ TypeScript compiled (${format} format)`);

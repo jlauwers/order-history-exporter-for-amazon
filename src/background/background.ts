@@ -3,6 +3,7 @@
  * Handles file downloads and cross-script communication
  */
 
+import browser from 'webextension-polyfill';
 import type { DownloadData, MessagePayload } from '../types';
 
 /**
